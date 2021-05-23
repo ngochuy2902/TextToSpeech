@@ -1,11 +1,13 @@
 const express = require('express');
 const fetch = require('node-fetch')
+const path = require('path')
 const gTTS = require('gtts')
 const port = 3002;
 const bodyParser = require('body-parser');
 const app = express();
+const BASE_AUDIO_PATH = "./public/audio/"
 
-const BASE_AUDIO_PATH = "/Users/huyhn/Study/DATN/audio/";
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Use Node.js body parsing middleware
 app.use(bodyParser.json());
