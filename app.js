@@ -2,7 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch')
 const path = require('path')
 const gTTS = require('gtts')
-const port = 3002;
+const port = 3001;
 const bodyParser = require('body-parser');
 const app = express();
 const BASE_AUDIO_PATH = "./public/audio/"
@@ -22,14 +22,13 @@ app.get('/', (request, response) => {
     );
 });
 
-app.post('/create', (request, response) => {
-    uuid = request.body.uuid;
-    text = request.body.text;
-    createAudio(uuid, text)
+app.post('/crawler', (request, response) => {
     response.send({
         message: 'Creating audio'
-    }
-    );
+    });
+    uuid = request.body.uuid;
+    text = request.body.text;
+    createAudio(uuid, text);
 });
 
 // Start the server
@@ -46,10 +45,10 @@ function createAudio(uuid, text) {
     gtts.save(path, function (err, result) {
         let msg;
         if (err) {
-            msg = {"uuid": uuid, "result": "Failed"}
+            msg = {"uuid": uuid, "status": "AUDIO_CRAWLING_FAILED"}
             throw new Error(err) 
         } else {
-            msg = {"uuid": uuid, "result": "Success"}
+            msg = {"uuid": uuid, "status": "AUDIO_CRAWLING_SUCCESS"}
         }
         sendResult(msg);
         console.log('Created successfully: ' + uuid);
@@ -58,7 +57,7 @@ function createAudio(uuid, text) {
 
 
 function sendResult(message) {
-    fetch('http://localhost:5500/audio', {
+    fetch('http://localhost:8080/api/internal/crawler/audio', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
