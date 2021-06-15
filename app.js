@@ -65,7 +65,7 @@ function sendResult(message) {
         body: JSON.stringify(message)
     })
         .then(response => {
-            if (response.status != 200) {
+            if (response.status != 204) {
                 console.log('Request error code ' + response.status);
                 return;
             }
